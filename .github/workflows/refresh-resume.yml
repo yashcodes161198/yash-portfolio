@@ -1,0 +1,49 @@
+name: Refresh resume
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-resume
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out portfolio
+        uses: actions/checkout@v6
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Download current Overleaf source
+        env:
+          OVERLEAF_VIEW_URL: ${{ secrets.OVERLEAF_VIEW_URL }}
+        run: node scripts/fetch-overleaf-source.mjs
+
+      - name: Safely extract source
+        run: python3 scripts/extract-overleaf-source.py
+
+      - name: Compile resume
+        uses: xu-cheng/latex-action@6549dc21effb2730855a1281407ecfcececc6c1b
+        with:
+          root_file: main.tex
+          working_directory: .resume-build/source
+          compiler: latexmk
+          args: -pdf -file-line-error -halt-on-error -interaction=nonstopmode
+          texlive_version: 2026
+
+      - name: Install PDF validation tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - name: Validate compiled resume
+        run: node scripts/validate-resume.mjs
+
+      - name: Publish last known-good resume
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: node scripts/publish-resume.mjs
