@@ -2,6 +2,9 @@ name: Refresh resume
 
 on:
   workflow_dispatch:
+  schedule:
+    # Mondays at 03:00 UTC / 08:30 IST.
+    - cron: "0 3 * * 1"
 
 permissions:
   contents: read
@@ -28,7 +31,14 @@ jobs:
       - name: Safely extract source
         run: python3 scripts/extract-overleaf-source.py
 
+      - name: Check whether the source changed
+        id: source_state
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: node scripts/resume-source-state.mjs check
+
       - name: Compile resume
+        if: steps.source_state.outputs.changed == 'true'
         uses: xu-cheng/latex-action@6549dc21effb2730855a1281407ecfcececc6c1b
         with:
           root_file: main.tex
@@ -38,12 +48,22 @@ jobs:
           texlive_version: 2026
 
       - name: Install PDF validation tools
+        if: steps.source_state.outputs.changed == 'true'
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
       - name: Validate compiled resume
+        if: steps.source_state.outputs.changed == 'true'
         run: node scripts/validate-resume.mjs
 
       - name: Publish last known-good resume
+        if: steps.source_state.outputs.changed == 'true'
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         run: node scripts/publish-resume.mjs
+
+      - name: Record the published source hash
+        if: steps.source_state.outputs.changed == 'true'
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          RESUME_SOURCE_HASH: ${{ steps.source_state.outputs.source_hash }}
+        run: node scripts/resume-source-state.mjs record

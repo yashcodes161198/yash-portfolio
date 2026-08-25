@@ -16,7 +16,7 @@ design reference is https://tedawf.com/. Do not add a blog.
 ## Public details
 
 - Email: yashk.code@gmail.com
-- Phone: +91 91133 58078. Yash explicitly wants this visible.
+- Phone: Do not display the number on the website; direct visitors to the resume.
 - LinkedIn: https://linkedin.com/in/yash-5a56a4234
 - GitHub: https://github.com/yashcodes161198
 - Google DSA: https://github.com/yashcodes161198/GoogleDSA

@@ -84,8 +84,12 @@ invalid identity, email, size, page count, ZIP, or compile output leaves the
 previous resume untouched.
 
 After this setup, normal maintenance is only: edit and recompile in Overleaf.
-A visitor immediately receives the last known-good PDF, while the same click
-starts a background refresh for the next download.
+Every Resume click starts a background refresh, and GitHub also checks once a
+week on Monday at 03:00 UTC (08:30 IST). The workflow hashes the safely
+extracted source files and exits before LaTeX compilation when that exact
+source was already published. It records the source hash only after a valid PDF
+has been published, so failed builds remain eligible for retry. A visitor
+always receives the last known-good PDF immediately.
 
 You can also deploy from this folder with the Vercel CLI:
 
