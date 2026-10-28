@@ -3,8 +3,8 @@ name: Refresh resume
 on:
   workflow_dispatch:
   schedule:
-    # Mondays at 03:00 UTC / 08:30 IST.
-    - cron: "0 3 * * 1"
+    # Daily at 03:00 UTC / 08:30 IST.
+    - cron: "0 3 * * *"
 
 permissions:
   contents: read

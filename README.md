@@ -89,8 +89,8 @@ invalid identity, email, size, page count, ZIP, or compile output leaves the
 previous resume untouched.
 
 After this setup, normal maintenance is only: edit and recompile in Overleaf.
-Every Resume click starts a background refresh, and GitHub also checks once a
-week on Monday at 03:00 UTC (08:30 IST). The workflow hashes the safely
+Every Resume click starts a background refresh, and GitHub also checks daily
+at 03:00 UTC (08:30 IST). The workflow hashes the safely
 extracted source files and exits before LaTeX compilation when that exact
 source was already published. It records the source hash only after a valid PDF
 has been published, so failed builds remain eligible for retry. A visitor
