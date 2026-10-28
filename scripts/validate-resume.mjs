@@ -22,8 +22,8 @@ if (!Number.isInteger(pages) || pages < 1 || pages > 4) {
 
 const text = execFileSync("pdftotext", ["-layout", pdfPath, "-"], { encoding: "utf8" });
 const firstLine = text.split(/\r?\n/).map((line) => line.trim()).find(Boolean);
-if (firstLine !== "Yash") {
-  throw new Error(`Compiled resume identity check failed: expected "Yash", found ${JSON.stringify(firstLine)}.`);
+if (firstLine !== "Yash Yash") {
+  throw new Error(`Compiled resume identity check failed: expected "Yash Yash", found ${JSON.stringify(firstLine)}.`);
 }
 if (!text.includes("yashk.code@gmail.com")) {
   throw new Error("Compiled resume does not contain the expected email address.");

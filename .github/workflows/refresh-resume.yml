@@ -25,6 +25,7 @@ jobs:
 
       - name: Download current Overleaf source
         env:
+          OVERLEAF_PROJECT_URL: https://www.overleaf.com/project/6a703af2e3ab13b78d682cfc
           OVERLEAF_VIEW_URL: ${{ secrets.OVERLEAF_VIEW_URL }}
         run: node scripts/fetch-overleaf-source.mjs
 

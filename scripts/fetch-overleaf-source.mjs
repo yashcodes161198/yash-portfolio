@@ -60,6 +60,10 @@ function metaContent(html, name) {
 
 async function main() {
   const viewUrl = requiredViewUrl();
+  const projectUrl = new URL(process.env.OVERLEAF_PROJECT_URL);
+  if (projectUrl.origin !== viewUrl.origin || !/^\/project\/[a-f0-9]{24}$/.test(projectUrl.pathname)) {
+    throw new Error("OVERLEAF_PROJECT_URL must be an https://www.overleaf.com/project/<project-id> URL.");
+  }
   const jar = new Map();
   const pageUrl = new URL(viewUrl);
   pageUrl.hash = "";
@@ -90,6 +94,9 @@ async function main() {
   if (typeof grant.redirect !== "string" || !/^\/project\/[a-f0-9]{24}$/.test(grant.redirect)) {
     throw new Error("Overleaf did not grant anonymous read-only project access.");
   }
+  if (grant.redirect !== projectUrl.pathname) {
+    throw new Error("OVERLEAF_VIEW_URL grants access to a different project than OVERLEAF_PROJECT_URL.");
+  }
 
   const zipResponse = await checkedFetch(
     new URL(`${grant.redirect}/download/zip`, pageUrl.origin),
@@ -104,7 +111,7 @@ async function main() {
 
   await mkdir(path.dirname(outputPath), { recursive: true });
   await writeFile(outputPath, zip);
-  console.log(`Downloaded ${zip.byteLength} bytes of Overleaf source.`);
+  console.log(`Downloaded ${zip.byteLength} bytes of Overleaf source from ${projectUrl.pathname}.`);
 }
 
 await main();

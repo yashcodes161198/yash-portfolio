@@ -75,10 +75,15 @@ and add:
 Never commit either value. Use `vercel env pull .env.local` if you need to copy
 the Blob token from Vercel locally, and keep `.env.local` untracked.
 
-### 5. Correct and test Overleaf once
+The workflow targets [Yash_Resume_new](https://www.overleaf.com/project/6a703af2e3ab13b78d682cfc).
+Its `OVERLEAF_PROJECT_URL` must match the project granted by `OVERLEAF_VIEW_URL`;
+the download stops if the read-only link points to another project. When changing
+projects, update the workflow's project URL and the GitHub read-only-link secret.
 
-The shared source currently contains `\newcommand{\name}{Yash Yash}`. Change it
-to `\newcommand{\name}{Yash}` and recompile in Overleaf. Then open **Actions >
+### 5. Test Overleaf once
+
+The resume heading must be `Yash Yash`, with `yashk.code@gmail.com` as the email.
+Recompile in Overleaf, then open **Actions >
 Refresh resume > Run workflow** in GitHub. A valid PDF is published to Blob;
 invalid identity, email, size, page count, ZIP, or compile output leaves the
 previous resume untouched.
